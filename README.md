@@ -1,3 +1,3 @@
-# neuron_value_adjusting
+# SNIP
 
 link: https://yongceli.github.io/neuron_value_adjusting/
