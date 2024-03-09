@@ -1,3 +1,3 @@
 # SNIP
 
-link: https://yongceli.github.io/snip/
+link: https://yongceli.github.io/SNIP/
