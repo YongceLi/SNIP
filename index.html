@@ -476,8 +476,12 @@ pre {
         <h2>Abstract</h2>
         <div class="flex-row">
             <p>
-                Large Language models (LLMs) have revolutionized the field of natural language processing with their remarkable performance across various applications. However, they suffer from issues related to untruthfulness and toxicity. With evolving data regulations, machine unlearning (MU) is becoming increasingly important to remove undesired outputs of LLMs, such as harmful, manipulated, or outdated information. This paper introduces a machine unlearning method specifically designed for LLMs. We present <b>S</b>elective <b>N</b>euron-wise <b>I</b>nterpretable <b>P</b>runing (<b>SNIP</b>) machine unlearning methods for LLMs, which are retrain-free and interpretable. SNIP selectively remove feed-forward layer neurons based on the relative importance of their neuron explanations on a targeted downstream task. To the best of our knowledge, SNIP is the first <em>interpretable</em> MU approach based on neuron concepts, which helps us understand and remove what have been learned in LLMs.
+                Large Language models (LLMs) have revolutionized the field of natural language processing with their remarkable performance across various applications. However, they suffer from issues related to untruthfulness and toxicity. With evolving data regulations, machine unlearning (MU) is becoming increasingly important to remove undesired outputs of LLMs, such as harmful, manipulated, or outdated information. This paper introduces a machine unlearning method specifically designed for LLMs. We present <b>S</b>elective <b>N</b>euron-wise <b>I</b>nterpretable <b>P</b>runing (<b>SNIP</b>), a machine unlearning method for LLMs, which is retrain-free and interpretable. SNIP selectively remove feed-forward layer neurons based on the relative importance of their neuron explanations on a targeted downstream task. To the best of our knowledge, SNIP is the first <em>interpretable</em> MU approach based on neuron concepts, which helps us understand and remove what have been learned in LLMs.
             </p>
+            <div style="text-align: center; margin: auto;">
+                <left><p><b>Figure 1:</b> Example of unlearning toxicity.</p></left>
+                <center><img class="card-img-top" src="https://github.com/YongceLi/SNIP/blob/main/example_MU.png?raw=true" style="width:400px"></center>
+            </div>
         </div>
     </section>
 
