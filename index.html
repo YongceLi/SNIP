@@ -4,7 +4,6 @@
 <script src="bootstrap.js"></script>
 <script type="text/javascript" charset="utf-8" src="https://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script> 
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
 <style type="text/css">
 body {
     font-family: "Titillium Web", "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
@@ -430,13 +429,13 @@ pre {
     <div id="authors">
         <center>
             <div class="author-row-new">
-                <a href="https://lilywenglab.github.io/">Yongce Li</a>,
-                <a href="https://lilywenglab.github.io/">Tsui-Wei (Lily) Weng</a>
+                Yongce Li,
+                Mentor: Tsui-Wei (Lily) Weng
             </div>
         </center>
         <center>
         <div class="affiliations">
-            <span> HDSI, UCSD</span>
+            <span> {yol013, lweng} @ucsd.edu </span>
         </div>
 
         <div class="affil-row">
@@ -503,28 +502,18 @@ pre {
     <section id="method"/>
         <hr>
         <h2>Method</h2>
-            <!--
-            <div class="mx-auto">
-                <left><p><b>Overview of the neuron explanation pipeline</b> and our proposed prompts (in green) to highly improve the explanation quality and efficiency.</p></left>
-                <center><img class="card-img-top" src="assets/fig1_GIF.gif" style="width:950px"></center>
-            </div>
-            <br>
-            <div class="flex-row">
-                <div class="mx-auto">
-                    <left><p><b>Proposed prompting methods:</b> 
-                    <br>
-                    Below illustrates how an example text excerpt is converted to a prompt. This prompt is what the explainer model receives and uses to generate an appropriate explanation.
-                    <br><br>
-                    The first prompt (in white) is the Original prompt used in the <a href="https://openai.com/research/language-models-can-explain-neurons-in-language-models">OpenAI blog [1]</a>, and the next 4 (colored) are our proposed prompts. Note the differences in how the highly activating tokens are expressed in each prompt.
-                    </p></left>
-                    <br>
-                    <center><img class="card-img-top" src="assets/fig2.png" style="width:950px"></center>
-
-                    <br><br>
-                </div>
-            </div>
-            -->
-            Working ...
+            <p>In this section, we describe SNIP step by step. In short, SNIP can be decomposed into 4 steps: 
+            <ol>
+                <li>For a subject model, using approach described in <a href="https://openai.com/research/language-models-can-explain-neurons-in-language-models">[1]</a> to get a concept set for all the MLP neurons, denote as C = {c<sub>ij</sub>}</li>
+                <li>Given a forgetting dataset D, prompt GPT-4 to get important concept sets for D, denote as C'</li>
+                <li>For each neuron n<sub>ij</sub> (neuron at i<sup>th</sup> MLP layer, j<sup>th</sup> index), calculate importance score s<sub>ij</sub> based on the similarity value between c<sub>ij</sub> and C'</li>
+                <li>Rank all the MLP neurons based on their importance score, prune the top k neurons (k is a hyperparameter to be determined).</li>
+            </ol>
+            </p>
+        <h3>
+        Step 1: Interpret MLP neurons
+        
+        </h3>
     </section>
 
     <section id="results"/>
