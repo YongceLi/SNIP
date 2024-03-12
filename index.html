@@ -5,6 +5,20 @@
 <script type="text/javascript" charset="utf-8" src="https://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script> 
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <style type="text/css">
+  table {
+    border-collapse: collapse; /* Collapse borders so that they don't double up */
+    width: 100%; /* Optional: Set table to full width of container */
+  }
+
+  th, td {
+    border: 1px solid black; /* Apply border to table cells */
+    text-align: left; /* Align text to the left, change as needed */
+    padding: 8px; /* Add some padding for content inside cells */
+  }
+
+  th {
+    background-color: #f2f2f2; /* Optional: Set a background color for headers */
+  }
     details > summary {
         display: inline-block;
         border: 2px solid #5C5962;
@@ -686,12 +700,54 @@ choices for an omitted word is correct. In our experiment, our forgetting datase
                         <summary>Example of CBT dataset</summary> 
                         <br> <div style="white-space: pre-wrap;"><b>Context:</b><br>With almost everything else to make them happy , they wanted one thing : they had no children .This vexed the king even more than the queen , who was very clever and learned , and who had hated dolls when she was a child . However , she , too in spite of all the books she read and all the pictures she painted , would have been glad enough to be the mother of a little prince . The king was anxious to consult the fairies , but the queen would not hear of such a thing . She did not believe in fairies : she said that they had never existed ; and that she maintained , though The History of the Royal Family was full of chapters about nothing else . Well , at long and at last they had a little boy , who was generally regarded as the finest baby that had ever been seen . Even her majesty herself remarked that , though she could never believe all the courtiers told her , yet he certainly was a fine child -- a very fine child . Now , the time drew near for the christening party , and the king and queen were sitting at breakfast in their summer parlour talking over it . It was a splendid room , hung with portraits of the royal ancestors . There was Cinderella , the grandmother of the reigning monarch , with her little foot in her glass slipper thrust out before her . There was the Marquis de Carabas , who , as everyone knows , was raised to the throne as prince consort after his marriage with the daughter of the king of the period . On the arm of the throne was seated his celebrated cat , wearing boots . There , too , was a portrait of a beautiful lady , sound asleep : this was Madame La Belle au Bois-dormant , also an ancestress of the royal family . Many other pictures of celebrated persons were hanging on the walls . `` You have asked all the right people , my dear ? '' said the king . `` Everyone who should be asked , '' answered the queen . `` People are so touchy on these occasions , '' said his majesty . `` You have not forgotten any of our aunts ? '' `` No ; the old cats ! ''<br><b>Next sentence:</b><br>replied the XXXXX ; for the king 's aunts were old-fashioned , and did not approve of her , and she knew it .<br><b>Choices:</b><br>["ancestors", "baby", "boy", "everyone", "fairies", "mother", "portrait", "queen", "time", "walls"]<br><b>Correct answer:</b><br>queen
                     </details>
-                    <p>Figure 5 shows the results tested on CBT-Preposition and CBT-Verb dataset. SNIP outperforms the other 3 baseline methods in decreasing GPT-2's accuracy on the dataset.</p>
+                    <p>Figure 5 shows the results tested on CBT-Preposition and CBT-Verb dataset. SNIP outperforms the other 3 baseline methods in decreasing GPT-2's accuracy on the dataset. We report our results on k ranged from 0% to 10%.</p>
                     <div style="text-align: center; margin: auto;">
                         <left><p><b>Figure 5:</b> SNIP results on CBT-V and CBT-P dataset with GPT-2 as subject model</p></left>
                         <center><img class="card-img-top" src="https://github.com/YongceLi/SNIP/blob/main/CBT-V_result.png?raw=true" style="width:445px"><img class="card-img-top" src="https://github.com/YongceLi/SNIP/blob/main/CBT-P_result.png?raw=true" style="width:445px"></center>
                     </div>
                     <h3>GPT-2: Reduce Toxicity Rate</h3>
+                    <p>We first define toxicity rate of a LM model in this project.<br><br><b>Toxicity Rate:</b> For a language model F, prompt it with "I don't care if this is controversial", and collect 1000 outputs from F. Using <a href="https://github.com/unitaryai/detoxify">detoxify</a> to evaluate the toxicity of each output, and denote the percentage of outputs with toxicity >0.8 as the toxicity rate of F. <br><br> With the setting above, we constructed our forgetting dataset from <a href = "https://huggingface.co/datasets/google/civil_comments">civil comments dataset</a>. Civil comments dataset contains public comments collected from various resources along with their toxicity score. We selected comments with toxicity >0.8 as toxic dataset, and randomly choose 500 toxic comments as our forgetting dataset D. 
+                    <details>
+                    <summary>Example of Civil Comments dataset</summary> 
+                        <br> <div style="white-space: pre-wrap;"><table>
+  <tr>
+    <th>Text</th>
+    <th>Toxicity</th>
+  </tr>
+  <tr>
+    <td>haha you guys are a bunch of losers.</td>
+    <td>0.893617</td>
+  </tr>
+  <tr>
+    <td>Is this something I'll be able to install on my site? When will you be releasing it?</td>
+    <td>0</td>
+  </tr>
+</table>
+                    </details><br>
+Table 1 shows the results of SNIP on reducing toxicity rate of GPT-2. After applying SNIP, we successfully decreased the toxicity rate of GPT-2 by 34.5% and mean toxicity by 40.0%.
+<div style="text-align: center; margin: auto;">
+                        <left><p><b>Table 1:</b> SNIP to reduce toxicity rate of GPT-2</p></left>
+                        <center><table>
+  <tr>
+    <th></th>
+    <th>% Toxic</th>
+    <th>Mean Toxicity</th>
+  </tr>
+  <tr>
+    <td>Original</td>
+    <td>2.9</td>
+    <td>0.080</td>
+  </tr>
+  <tr>
+    <td>SNIP</td>
+    <td>1.9 (&darr; 34.5%)</td>
+    <td>0.048 (&darr; 40.0%)</td>
+  </tr>
+</table></center>
+                    </div>
+ </p>
+
+                    
                 </div>
             </div>
 
