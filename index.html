@@ -459,7 +459,7 @@ pre {
 <div class="container">
     <div class="paper-title">
     <h1> 
-        SNIP: Machine Unlearning via Selective Neuron-wise Interpretable Pruning
+        &#9986; SNIP: Machine Unlearning via Selective Neuron-wise Interpretable Pruning
     </div>
 
     <div id="authors">
@@ -672,7 +672,12 @@ List a comprehensive list of categories of concepts that are important for langu
         <h2>Experiment Results</h2>
             <div class="flex-row">
                 <div class="mx-auto">
-                    <p>We tested our method on two different tasks, text comprehension and toxicity reduction, on GPT-2 model. To have a more comprehensive evaluation of our method, we compared SNIP with 3 prune-based unlearning baseline methods. In this section, we present our experiment results.</p>
+                    <p>We tested our method on two different tasks, text comprehension and toxicity reduction, on GPT-2 model. To have a more comprehensive evaluation of our method, we compared SNIP with 3 prune-based unlearning baseline methods. 
+                        <ul>
+                        <li><b>Prune random neurons:</b> Randomly prune k MLP neurons</li>
+                        <li><b>Prune based on concept keyword:</b> Manually choose a keyword set K = {keyword<sub>i</sub>} for the forgetting dataset D. Select n<sub>ij</sub> if and only if there exists i such that keyword<sub>i</sub> &isin; c<sub>ij</sub>. Prune the top k neurons based on their concept explanation score in step 1.</li>
+                        <li><b>Prune GPT-4 selected neurons:</b> We prompt GPT-4 with dataset examples and neuron concepts, and let it assign an importance score ranged from 0 to 10 to each neuron. Prune the top k high score neurons.</li>
+                        </ul></p>
                     <h3>GPT-2: Unlearning Children's Book Test dataset</h3>
                     <p>The Children’s Book Test (CBT) was
 created to examine the performance of LMs on different categories of words: named entities, nouns, verbs, and prepositions. CBT reports accuracy on an automatically constructed cloze test where the task is to predict which of 10 possible
