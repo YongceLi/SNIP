@@ -546,12 +546,12 @@ pre {
                 <li>Rank all the MLP neurons based on their importance score, prune the top k neurons (k is a hyperparameter to be determined).</li>
             </ol>
             </p>
-        <h3>
-        Step 1: Interpret MLP neurons
-        </h3>
-        <p>In this step, our goal is to get neuron concept for all the MLP neurons in the subject model. We strictly follow the procedure introduced by OpenAI, using GPT-4 to summarize highly activated tokens of a neuron. Figure 2 shows the whole explanation pipeline. We first probe the subject model with a probing dataset. For each neuron, each token has an unique activation value, while some tokens are highly activated (marked as green). We prompt GPT-4 to summarize those tokens thus describe the functionality of that neuron. </p>
-        <details> <summary>GPT-4 prompt</summary> 
-        <br> <div style="white-space: pre-wrap;">
+        <h3>Step 1: Interpret MLP neurons and get neuron concept sets C</h3>
+            <p>In this step, our goal is to get neuron concept for all the MLP neurons in the subject model. We strictly follow the procedure introduced by OpenAI, using GPT-4 to summarize highly activated tokens of a neuron. Figure 2 shows the whole explanation pipeline. We first probe the subject model with a probing dataset. For each neuron, each token has an unique activation value, while some tokens are highly activated (marked as green). We prompt GPT-4 to summarize those tokens thus describe the functionality of that neuron. 
+            </p>
+            <details> 
+                <summary>GPT-4 prompt to get C</summary> 
+                <br> <div style="white-space: pre-wrap;">
 We're studying neurons in a neural network. Each neuron looks for some particular thing in a short document. Look at the parts of the document the neuron activates for and summarize in a single sentence what the neuron is looking for. Don't list examples of words.
 
 The activation format is token&lt;tab&gt;activation. Activation values range from 0 to 10. A neuron finding what it's looking for is represented by a non-zero activation value. The higher the activation value, the stronger the match.
@@ -620,11 +620,51 @@ aping		9
 [prompt truncated …]
 
 Explanation of neuron 4 behavior: the main thing this neuron does is find
-</div></div> </details>
+</div> </details>
         <div style="text-align: center; margin: auto;">
                 <left><p><b>Figure 2:</b> Language models can explain neurons in language models</p></left>
-                <center><img class="card-img-top" src="https://github.com/YongceLi/SNIP/blob/main/Method_Step_1.png?raw=true" style="width:400px"></center>
+                <center><img class="card-img-top" src="https://github.com/YongceLi/SNIP/blob/main/Method_Step_1.png?raw=true" style="width:445px"></center>
         </div>
+        <h3>Step 2: Get concept set C' for forgetting dateset D</h3>
+        <p>In this step, we aim to use large language model to capture important concepts embedded in a given dataset. Once we get the dataset concept sets, we will be able to compare neuron concepts with dataset concepts, thus computing an importance score for each neuron to the given dataset. We detailedly instruct the model with examples of neuron concepts to ensure the output is in high quality.</p>
+        <details> 
+                <summary>GPT-4 prompt to get C'</summary> 
+                <br> <div style="white-space: pre-wrap;">We're studying how neurons in a neural network affect the model's performance on specific tasks. Each neuron looks for some particular thing in a short document. To measure how neurons are related to the given task, we want to know what concepts are important for the task. 
+
+Neuron concepts examples:
+1. the past and present tense of the verb "to be" (was, were, is).
+2. variations of the verb 'be'.
+3. modal verbs, especially "would" and "were".
+4. action verbs related to starting or beginning.
+5. future tense verbs and words related to commitment.
+6. the usage of the verb "to be" and its conjugations.
+7. the verb 'use' and its variations.
+8. the word "could" and similar auxiliary verbs indicating possibility.
+9. the word "like" and its variations, as well as other verbs expressing desire or interest.
+10. verbs related to posting and sharing information.
+
+Given the input samples below:
+
+sample1: ...
+sample2: ...
+
+List a comprehensive list of categories of concepts that are important for language models to comprehend the given texts. Output in the following format:
+1. concept1
+2. concept2
+...
+                </div></details>
+        <div style="text-align: center; margin: auto;">
+                <left><p><b>Figure 3:</b> Language models can extract important concept in a dataset</p></left>
+                <center><img class="card-img-top" src="https://github.com/YongceLi/SNIP/blob/main/Method_Step_2.png?raw=true" style="width:500px"></center>
+        </div>
+        <h3>Step 3: Get importance score for each neuron</h3>
+        <p>Since we got neuron concept c<sub>ij</sub> for each neuron n<sub>ij</sub> and dataset concept sets C' for D, we want to find a systematic way to compare them. As they are all represented by sentences, an efficient method is to embed them into vectors and use cosine similarity to encode their distance. We use the maximum similarity value between neuron concept and each dataset concept to represent the importance of a neuron to the given forgetting dataset.</p>
+        <div style="text-align: center; margin: auto;">
+                <left><p><b>Figure 4:</b> Embedding extracted concepts into vectors</p></left>
+                <center><img class="card-img-top" src="https://github.com/YongceLi/SNIP/blob/main/Method_Step_3.png?raw=true" style="width:500px"></center>
+        </div>
+        <h3>Step 4: Prune neurons based on importance score</h3>
+        <p>Our goal is to let the model forget concepts they learned in the forgetting dataset D. While we have each neuron's importance score to D, intuitively, we rank all the neurons based on their importance score from high to low, and prune the top k neurons. (k is a hyperparameter users can adjust to trade off between the effectiveness of forgetting and the overall capabilities of the subject model)</p>
     </section>
 
     <section id="results"/>
@@ -633,62 +673,6 @@ Explanation of neuron 4 behavior: the main thing this neuron does is find
             <div class="flex-row">
                 <div class="mx-auto">
                     Working ...
-                    <!--
-                    <left><p><b>Token Usage Differences:</b>
-                    <br>
-                    Before the API processes the prompts, the input is broken down into tokens, or parts of words.
-                    <br><br>
-                    Our proposed prompting methods show significant improvement in token usage over the Original prompt, decreasing API costs and computation time.
-                    </p></left>
-                    <br>
-                    <center><img class="card-img-top" src="assets/token_comparison.jpg" style="width:375px"></center>
-
-                    <br><br>
-
-                    <left><p><b>Simulate and Score: </b>
-                    <br>
-                    In order to test accuracy of generated explanations, explanations are simulated then scored against the true activations for each excerpt. A simulator model is given the generated explanation along with the text excerpt and asked to predict the activating tokens. The predicted activations are compared to the true activations to calculate accuracy.
-                    <br>
-                        
-                    <br>
-                    We evaluate at two sets of neurons in below table, and bolded number is the highest score for each column:  
-                    <br>
-                    <p style="text-indent: 25px;"> * Random - tested neurons are randomly chosen without a score threshold. 
-                    <br>
-                    <p style="text-indent: 25px;"> * Random Interpetable - tested neurons are randomly chosen from the pool of neurons with a score higher than 0.35, which is considered reasonably "interpretable". 
-                    <br><br>
-                    It can be seen that with GPT-3.5 as the explainer model, our <b>Summary</b> prompting method consistently scored highest. With GPT-4 as the explainer model, both the <b>Highlight</b> and <b>Original</b> prompting methods scored high. 
-                    </p></left>
-                    <br>
-                    <center><img class="card-img-top" src="assets/simulatescore.jpg" style="width:825px"></center>
-
-                    <br><br>
-                    
-                    <left><p><b>Ada + Cosine Similarity:  </b>
-                    <br>
-                    Another method of testing accuracy of generated explanations is AdaCS. Both the generated explanation and a predetermined "ground truth" explanation for the neuron are converted into text embeddings or word vectors by OpenAI's Ada model. The word vectors are then compared through cosine similarity to determine accuracy.
-                    <br><br>
-                    In addition to the Random neurons and Random Interpretable neurons defined above, we also evaluate on another two sets of neurons in the below table, where bolded is the highest score for each column: 
-                    <br>
-                    <p style="text-indent: 25px;"> * Top 20 per layer - top 20 highest scoring neurons from each layer
-                    <br>
-                    <p style="text-indent: 25px;"> * Top 1k - top 1000 highest scoring neurons from the entire neural network
-                    <br><br>
-                    It can be seen that on average, the <b>HighlightSummary (HS)</b> prompting method scored highest.
-                    </p></left>
-                    <center><img class="card-img-top" src="assets/adacs.jpg" style="width:1000px"></center>
-
-                    <br><br>
-                    
-                    <left><p><b>Human Evaluation: </b>
-                    <br>
-                    Subjects were given a text excerpt and its highly activating tokens along with 5 generated explanations, one for each prompting method. They were asked to rank each explanation from 1-5 (5 being best) and choose one explanation that they felt best described the text excerpt and its activations.
-                    <br><br>
-                    We bolded the numbers that is the highest score for each column. It can be seen in the below table that on average, our proposed <b>Summary</b> prompting method scored highest, while <b>HighlightSummary (HS)</b> prompt's explanation had the highest percentage chosen as best.
-                    </p></left>
-                    <br>
-                    <center><img class="card-img-top" src="assets/humanevaluation.jpg" style="width:775px"></center>
-                    -->
                 </div>
             </div>
 
