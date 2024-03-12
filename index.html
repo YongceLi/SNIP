@@ -5,6 +5,42 @@
 <script type="text/javascript" charset="utf-8" src="https://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script> 
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <style type="text/css">
+    details > summary {
+        display: inline-block;
+        border: 2px solid #5C5962;
+        border-radius: 5px;
+        padding: 5px 10px;
+        cursor: pointer;
+        color: #0066CD;
+        outline: none;
+        font-size: 16px;
+        background-color: white;
+        list-style: none;
+    }
+
+    details > summary::-webkit-details-marker {
+        display: none;
+    }
+
+    /* To remove the additional padding and margin */
+    details {
+        padding: 0;
+        border: none;
+    }
+
+    details[open] > summary {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    /* Optional: Add some padding and a border to the content for when the details are open */
+    details > div {
+        border: none;
+        border-top: none;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+        padding: 10px;
+    }
 body {
     font-family: "Titillium Web", "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
     font-weight: 300;
@@ -512,8 +548,83 @@ pre {
             </p>
         <h3>
         Step 1: Interpret MLP neurons
-        
         </h3>
+        <p>In this step, our goal is to get neuron concept for all the MLP neurons in the subject model. We strictly follow the procedure introduced by OpenAI, using GPT-4 to summarize highly activated tokens of a neuron. Figure 2 shows the whole explanation pipeline. We first probe the subject model with a probing dataset. For each neuron, each token has an unique activation value, while some tokens are highly activated (marked as green). We prompt GPT-4 to summarize those tokens thus describe the functionality of that neuron. </p>
+        <details> <summary>GPT-4 prompt</summary> 
+        <br> <div style="white-space: pre-wrap;">
+We're studying neurons in a neural network. Each neuron looks for some particular thing in a short document. Look at the parts of the document the neuron activates for and summarize in a single sentence what the neuron is looking for. Don't list examples of words.
+
+The activation format is token&lt;tab&gt;activation. Activation values range from 0 to 10. A neuron finding what it's looking for is represented by a non-zero activation value. The higher the activation value, the stronger the match.
+
+Neuron 1
+Activations:
+&lt;start&gt;
+the		0
+ sense		0
+ of		0
+ together	3
+ness		7
+ in		0
+ our		0
+ town		1
+ is		0
+ strong		0
+.		0
+&lt;end&gt;
+&lt;start&gt;
+[prompt truncated …]
+&lt;end&gt;
+
+Same activations, but with all zeros filtered out:
+&lt;start&gt;
+ together	3
+ness		7
+town		1
+&lt;end&gt;
+&lt;start&gt;
+[prompt truncated …]
+&lt;end&gt;
+
+Explanation of neuron 1 behavior: the main thing this neuron does is find phrases related to community
+
+[prompt truncated …]
+
+Neuron 4
+Activations:
+&lt;start&gt;
+Esc		0
+aping		9
+ the		4
+ studio		0
+,		0
+ Pic		0
+col		0
+i		0
+ is		0
+ warmly	0
+ affecting	3
+&lt;end&gt;
+&lt;start&gt;
+[prompt truncated …]
+&lt;end&gt;
+
+Same activations, but with all zeros filtered out:
+&lt;start&gt;
+aping		9
+ the		4
+ affecting	3
+&lt;end&gt;
+&lt;start&gt;
+[prompt truncated …]
+&lt;end&gt;
+[prompt truncated …]
+
+Explanation of neuron 4 behavior: the main thing this neuron does is find
+</div></div> </details>
+        <div style="text-align: center; margin: auto;">
+                <left><p><b>Figure 2:</b> Language models can explain neurons in language models</p></left>
+                <center><img class="card-img-top" src="https://github.com/YongceLi/SNIP/blob/main/Method_Step_1.png?raw=true" style="width:400px"></center>
+        </div>
     </section>
 
     <section id="results"/>
